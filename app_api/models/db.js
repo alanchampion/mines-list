@@ -1,8 +1,8 @@
 var mongoose = require ('mongoose');
 var dbURI = 'mongodb://localhost/MinesPlanner';
-/*if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production') {
   dbURI = process.env.MONGOLAB_URI;
-}*/
+}
 
 console.log(dbURI);
 
