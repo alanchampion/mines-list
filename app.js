@@ -7,7 +7,6 @@ var bodyParser = require('body-parser');
 require('./app_api/models/db');
 
 var routes = require('./app_server/routes/index');
-// var users = require('./app_server/routes/users');
 var classesApi = require('./app_api/routes/index');
 
 var app = express();
