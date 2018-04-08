@@ -1,8 +1,8 @@
 var mongoose = require ('mongoose');
-var dbURI = 'mongodb://localhost/MinesPlanner';
-/*if (process.env.NODE_ENV === 'production') {
+var dbURI = 'mongodb://localhost/MinesList';
+if (process.env.NODE_ENV === 'production') {
   dbURI = process.env.MONGOLAB_URI;
-}*/
+}
 
 mongoose.connect(dbURI);
 
