@@ -4,6 +4,8 @@ var dbURI = 'mongodb://localhost/MinesPlanner';
   dbURI = process.env.MONGOLAB_URI;
 }*/
 
+console.log(dbURI);
+
 mongoose.connect(dbURI);
 
 var readLine = require ("readline");
