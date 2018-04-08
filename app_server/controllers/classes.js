@@ -50,7 +50,8 @@ var renderClassList = function(req, res, responseBody) {
     title: 'Mines Planner',
     pageHeader: {
       title: 'Mines Planner',
-      strapline: 'Making sure you get it done!'
+      strapline: 'Making sure you get it done!',
+      db: process.env.MONGOLAB_URI
     },
     sidebar: "Select a class to get started! You will be able to view and add assignments by class. Mines Planner will help you keep track of those pesky due dates and assignment plannings.",
     classes: responseBody,
