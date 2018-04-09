@@ -83,7 +83,8 @@ var renderClassList = function(req, res, responseBody) {
       sidebar: "Sell and buy things with the Mines campus! Select an item to get started, or click sell above to get started selling of your old junk.",
       classes: responseBody,
       message: message,
-      mineslist_token: req.cookies.mineslist_token
+      mineslist_token: req.cookies.mineslist_token,
+      loggedIn: 'true'
     });
   } else {
     res.render('classes-list', {
