@@ -1,0 +1,29 @@
+extends layout
+
+include _includes/sharedHTMLfunctions
+
+block content
+  .row.page-header
+    .col-lg-12
+      h1= pageHeader.title
+  #banner.page-header
+    .row
+      -if(error == 'missing')
+        .alert.alert-danger(role="alert") Make sure fill in everything!
+      -if(error == 'failed')
+        .alert.alert-danger(role="alert") That email is already taken!
+      .col-md-6.col-sm-12
+        form.form-horizontal(action="", method="post", role="form")
+          .form-group
+            label.col-xs-10.col-sm-2.control-label(for="#{formInfo.name}") Full Name
+            .col-xs-12.col-sm-10
+              input.form-control(name="name")
+          .form-group
+            label.col-xs-10.col-sm-2.control-label(for="#{formInfo.email}") Email
+            .col-xs-12.col-sm-10
+              input.form-control(name="email" type="email")
+          .form-group
+            label.col-xs-10.col-sm-2.control-label(for="#{formInfo.password}") #{formInfo.password}
+            .col-xs-12.col-sm-10
+              input.form-control(name="password" type="password")
+          button.btn.btn-default.pull-right Register

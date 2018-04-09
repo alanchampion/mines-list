@@ -5,6 +5,32 @@ var apiOptions = {
 if (process.env.NODE_ENV === 'production') {
   apiOptions.server = "https://mines-list.herokuapp.com";
 };
+// var authentication = require('javascripts/authentication');
+
+var getToken = function () {
+  return localStorage['mineslist_token'];
+};
+
+var isLoggedIn = function() {
+  var token = getToken();
+  if(token){
+    var payload = JSON.parse(atob(token.split('.')[1]));
+    return payload.exp > Date.now() / 1000;
+  } else {
+    return false;
+  }
+};
+
+var currentUser = function() {
+  if(isLoggedIn()){
+    var token = getToken();
+    var payload = JSON.parse(atob(token.split('.')[1]));
+    return {
+      email : payload.email,
+      name : payload.name
+    };
+  }
+};
 
 var formatDate = function(dateString) {
   var date = new Date(dateString);
@@ -37,25 +63,40 @@ var _showError = function(req, res, status) {
 };
 
 var renderClassList = function(req, res, responseBody) {
+  console.log(req.cookies.mineslist_token);
   var message;
   if(!(responseBody instanceof Array)) {
     message = "API lookup error";
     responseBody = {};
   } else {
     if(!responseBody.length) {
-      message = "No classes found";
+      message = "No items found";
     }
   }
-  res.render('classes-list', {
-    title: 'Mines Planner',
-    pageHeader: {
-      title: 'Mines Planner',
-      strapline: 'Making sure you get it done!'
-    },
-    sidebar: "Select a class to get started! You will be able to view and add assignments by class. Mines Planner will help you keep track of those pesky due dates and assignment plannings.",
-    classes: responseBody,
-    message: message
-  });
+  if(req.cookies.mineslist_token) {
+    res.render('classes-list', {
+      title: 'MinesList',
+      pageHeader: {
+        title: 'MinesList',
+        strapline: 'By students, for students.'
+      },
+      sidebar: "Sell and buy things with the Mines campus! Select an item to get started, or click sell above to get started selling of your old junk.",
+      classes: responseBody,
+      message: message,
+      mineslist_token: req.cookies.mineslist_token
+    });
+  } else {
+    res.render('classes-list', {
+      title: 'MinesList',
+      pageHeader: {
+        title: 'MinesList',
+        strapline: 'By students, for students.'
+      },
+      sidebar: "Sell and buy things with the Mines campus! Select an item to get started, or click sell above to get started selling of your old junk.",
+      classes: responseBody,
+      message: message
+    });
+  }
 };
 
 /* GET 'home' page */

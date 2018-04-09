@@ -3,21 +3,35 @@ html
   head
     meta(names='viewport', content='width=device-width, initial-scale=1.0')
     title= title
+    -if(mineslist_token)
+      meta(names='authentication', content=mineslist_token)
     link(rel='stylesheet', href='/bootstrap/css/superhero.bootstrap.css')
     link(rel='stylesheet', href='/stylesheets/style.css')
   body(style="margin-bottom:3em;")
     .navbar.navbar-default.navbar-fixed-top
       .container
         .navbar-header
-          a.navbar-brand(href='/') My Courses 
+          a.navbar-brand(href='/') MinesList
           button.navbar-toggle(type='button', data-toggle='collapse', data-target='#navbar-main')
             span.icon-bar
             span.icon-bar
             span.icon-bar
-        //- #navbar-main.navbar-collapse.collapse
-        //-   ul.nav.navbar-nav
-        //-     li
-        //-       a(href='/') 
+        #navbar-main.navbar-collapse.collapse
+          ul.nav.navbar-nav
+            li
+              a(href='/') Purchase
+            li
+              a(href='/') Sell
+          ul.nav.navbar-nav.navbar-right
+            -if(loggedIn == 'true')
+              li
+                a(href='/logout') Log Out
+            -if(loggedIn != 'true')
+              li
+                a(href='/register') Sign Up
+              li
+                a(href='/login') Log In
+
     .container
       block content
 
@@ -32,3 +46,4 @@ html
     script(src='/javascripts/jquery-3.3.1.min.js')
     script(src='/bootstrap/js/bootstrap.min.js')
     script(src='/javascripts/validation.js')
+    script(src='/javascripts/authentication.js')

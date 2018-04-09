@@ -1,17 +1,44 @@
 var mongoose = require('mongoose');
 var Classes = mongoose.model('Class');
 var Assignments = mongoose.model('Assignment');
+var User = mongoose.model('User');
 
 var sendJsonResponse = function(res, status, content) {
   res.status(status);
   res.json(content);
 }
 
-var doAddAssignment = function(req, res, course) {
+var getAuthor = function(req, res, callback) {
+  if (req.payload && req.payload.email) {
+    User
+      .findOne({ email : req.payload.email })
+      .exec(function(err, user) {
+        if (!user) {
+          sendJSONresponse(res, 404, {
+            "message": "User not found"
+          });
+          return;
+        } else if (err) {
+          console.log(err);
+          sendJSONresponse(res, 404, err);
+          return;
+        }
+        callback(req, res, user.name);
+      });
+  } else {
+    sendJSONresponse(res, 404, {
+      "message": "User not found"
+    });
+    return;
+  }
+};
+
+var doAddAssignment = function(req, res, course, author) {
   if(!course) {
     sendJsonResponse(res, 404, {"message" : "courseid not found"});
   } else {
     course.assignments.push({
+      author: author,
       name: req.body.name,
       due: req.body.due, 
       value: req.body.value,
@@ -31,21 +58,23 @@ var doAddAssignment = function(req, res, course) {
 }
 
 module.exports.assignmentCreate = function(req, res) {
-  if(req.params.courseid) {
-    Classes
-      .findById(req.params.courseid)
-      .select('assignments')
-      .exec(function(err, course) {
-        if(err) {
-          sendJsonResponse(res, 400, err);
-          return;
-        } else {
-          doAddAssignment(req, res, course);
-        }
-      });
-  } else {
-    sendJsonResponse(res, 404, {"message" : "Not found, courseid required"});
-  }
+  getAuthor(req, res, function(req, res, userName) {
+    if(req.params.courseid) {
+      Classes
+        .findById(req.params.courseid)
+        .select('assignments')
+        .exec(function(err, course) {
+          if(err) {
+            sendJsonResponse(res, 400, err);
+            return;
+          } else {
+            doAddAssignment(req, res, course);
+          }
+        });
+    } else {
+      sendJsonResponse(res, 404, {"message" : "Not found, courseid required"});
+    }
+  });
 };
 
 module.exports.getAssignments = function(req, res) {

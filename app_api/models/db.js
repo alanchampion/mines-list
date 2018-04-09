@@ -1,6 +1,6 @@
 var mongoose = require ('mongoose');
 var dbURI = 'mongodb://localhost/MinesList';
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === 'production' && process.env.MONGOLAB_URI) {
   dbURI = process.env.MONGOLAB_URI;
 }
 
@@ -55,3 +55,4 @@ process.once('SIGTERM', function() {
 });
 
 require ('./courses');
+require('./users');
