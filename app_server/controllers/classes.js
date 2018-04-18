@@ -102,7 +102,8 @@ var renderClassList = function(req, res, responseBody) {
 
 /* GET 'home' page */
 module.exports.classlist = function(req, res) {
-  var requestOptions, path;
+  renderClassList(req, res);
+  /*var requestOptions, path;
   path = '/api/courses';
   requestOptions = {
     url : apiOptions.server + path,
@@ -116,7 +117,7 @@ module.exports.classlist = function(req, res) {
     } else {
       _showError(req, res, response.statusCode);
     }
-  });
+  });*/
 }
 
 var renderClass = function(req, res, responseBody) {

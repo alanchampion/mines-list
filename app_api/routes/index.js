@@ -6,22 +6,26 @@ var auth = jwt({
   userProperty: 'payload'
 });
 var ctrlClasses = require('../controllers/courses');
-var ctrlAssignments = require('../controllers/assignments');
+// var ctrlAssignments = require('../controllers/assignments');
+var ctrlUsers = require('../controllers/users');
 var ctrlAuth = require('../controllers/authentication');
 
-/* Classes pages */
-router.get('/courses', ctrlClasses.getCourses);
-router.get('/courses/:courseid', ctrlClasses.getCourse);
+/* Classes pages*/
+router.get('/courses', auth, ctrlClasses.getCourses);
+router.get('/courses/:courseid', auth, ctrlClasses.getCourse); 
 
-/* Assignment pages */
+/* Assignment pages
 router.post('/courses/:courseid/assignments', auth, ctrlAssignments.assignmentCreate);
 router.get('/courses/:courseid/assignments', ctrlAssignments.getAssignments);
 router.get('/courses/:courseid/assignments/:assignmentid', ctrlAssignments.getAssignment);
 router.put('/courses/:courseid/assignments/:assignmentid', auth, ctrlAssignments.updateAssignment);
-router.delete('/courses/:courseid/assignments/:assignmentid', auth, ctrlAssignments.deleteAssignment);
+router.delete('/courses/:courseid/assignments/:assignmentid', auth, ctrlAssignments.deleteAssignment); */
 
 /* Authentication pages */
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
+
+/* Users api */
+router.get('/user', auth, ctrlUsers.getProfile);
 
 module.exports = router;
