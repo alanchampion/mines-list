@@ -6,62 +6,82 @@ var sendJsonResponse = function(res, status, content) {
   res.json(content);
 }
 
-/*
-module.exports.getItems = function(req, res) {
-}
-module.exports.getItem = function(req, res) {
-}
-module.exports.deleteAssignment = function(req, res){
-    
-}*/
-
 module.exports.postItem = function(req, res) {
-   /* Items.exec(function(err,item){
-
-    item.push({
-        name: req.body.name,
-        seller: req.body.seller,
-        price: req.body.price,
-        description: req.body.description
-    });
-   item.save(function(err, item){
-        var thisItem;
-        if(err){
+  User
+    .findOne({email:req.payload.email})
+    .select('items')
+    .exec(function(err, user) {
+      if(err) {
+        sendJsonResponse(res, 400, err);
+        return;
+      } else {
+          user.items.push({
+          name: req.body.name,
+          seller: req.body.seller,
+          price: req.body.price,
+          description: req.body.description
+          });
+      
+          user.save(function(err, item){
+          var thisItem;
+          if(err){
             console.log(err);
             sendJsonResponse(res,400,err);
-        }else {
-            thisItem = items[items.length-1];
+          }else {
+            thisItem = user.items[user.items.length-1];
             sendJsonResponse(res,201,thisItem);
-        }
-    });
-    });
-    */
-    User
-        .findOne({email:req.payload.email})
-        .select('items')
-        .exec(function(err, user) {
-          if(err) {
-            sendJsonResponse(res, 400, err);
-            return;
-          } else {
-                user.items.push({
-                name: req.body.name,
-                seller: req.body.seller,
-                price: req.body.price,
-                description: req.body.description
-                });
-          
-                user.save(function(err, item){
-                var thisItem;
-                if(err){
-                    console.log(err);
-                    sendJsonResponse(res,400,err);
-                }else {
-                    thisItem = user.items[user.items.length-1];
-                    sendJsonResponse(res,201,thisItem);
-                }
-                });
           }
-    });
+          });
+      }
+ });
 };
 
+module.exports.deleteItem = function(req, res) {
+  if (!req.payload.email || !req.params.itemid) {
+    sendJsonResponse(res, 404, {"message" : "Not found, log in and item id are both required"});
+    return;
+  }
+  User
+    .findOne({email:req.payload.email})
+    .select('items')
+    .exec(function(err, user) {
+      if(!user) {
+        sendJsonResponse(res, 404, {"message" : "User not found."});
+        return;
+      } else if(err) {
+        sendJsonResponse(res, 400, err);
+        return;
+      } 
+      if(user.items && user.items.length > 0) {
+        if(!user.items.id(req.params.itemid)) {
+          sendJsonResponse(res, 404, {"message" : "item id not found"});
+        } else {
+          user.items.id(req.params.itemid).remove();
+          user.save(function(err) {
+            if(err) {
+              console.log(err);
+              sendJsonResponse(res, 404, err);
+            } else {
+              sendJsonResponse(res, 204, null);
+            }
+          });
+        }
+      }
+ });
+}
+
+module.exports.getItems = function(req, res) {
+  User
+    .find()
+    .select('items _id')
+    .exec(function(err, users) {
+      if(!users) {
+        sendJsonResponse(res, 200, {});
+      } else if(err) {
+        sendJsonResponse(res, 400, err);
+        return;
+      } else {
+        sendJsonResponse(res, 200, users);
+      }
+ });
+};

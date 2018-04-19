@@ -17,17 +17,12 @@ var ctrlUsers = require('../controllers/users');
 var ctrlAuth = require('../controllers/authentication');
 var ctrlItem = require('../controllers/item');
 
-/* Classes pages*/
-router.get('/courses', auth, ctrlClasses.getCourses);
-router.get('/courses/:courseid', auth, ctrlClasses.getCourse); 
-
+/* Item pages */
 router.post('/items', auth, ctrlItem.postItem);
-/* Item pages 
+router.get('/items', ctrlItem.getItems);
+// router.get('/items', ctrlItem.getItems);
+router.delete('/items/:itemid', auth, ctrlItem.deleteItem); 
 
-router.get('items', ctrlItem.getItems);
-router.get('items', ctrlItem.getItems);
-router.delete('items',auth, ctrlItem.deleteAssignment); 
-*/
 /* Authentication pages */
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
