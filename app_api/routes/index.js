@@ -21,8 +21,9 @@ var ctrlItem = require('../controllers/item');
 router.get('/courses', auth, ctrlClasses.getCourses);
 router.get('/courses/:courseid', auth, ctrlClasses.getCourse); 
 
+router.post('/items', auth, ctrlItem.postItem);
 /* Item pages 
-router.post('items',auth, ctrlItem.itemCreate);
+
 router.get('items', ctrlItem.getItems);
 router.get('items', ctrlItem.getItems);
 router.delete('items',auth, ctrlItem.deleteAssignment); 

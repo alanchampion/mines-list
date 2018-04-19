@@ -2,6 +2,15 @@ var mongoose = require('mongoose');
 var crypto = require('crypto');
 var jwt = require('jsonwebtoken');
 
+var itemSchema = new mongoose.Schema({
+  name: {type: String, required: true},
+  seller: {type: String, required: true},
+  price: {type: Number, required: true},
+  description:{type: String, required: false}
+});
+
+mongoose.model('Item', itemSchema);
+
 var userSchema = new mongoose.Schema({
   email: {
     type: String,
@@ -12,6 +21,7 @@ var userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
+  items: [itemSchema],
   hash: String,
   salt: String
 });
