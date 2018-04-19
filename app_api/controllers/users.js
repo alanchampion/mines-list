@@ -10,7 +10,7 @@ var getUser = function(req, res, callback) {
   if (req.payload.email) {
     User
       .findOne({ email : req.payload.email })
-      .select("_id email name")
+      .select("_id email name items")
       .exec(function(err, user) {
         if (!user) {
           sendJsonResponse(res, 404, {
