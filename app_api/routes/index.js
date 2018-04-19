@@ -15,18 +15,18 @@ var ctrlClasses = require('../controllers/courses');
 // var ctrlAssignments = require('../controllers/assignments');
 var ctrlUsers = require('../controllers/users');
 var ctrlAuth = require('../controllers/authentication');
+var ctrlItem = require('../controllers/item');
 
 /* Classes pages*/
 router.get('/courses', auth, ctrlClasses.getCourses);
 router.get('/courses/:courseid', auth, ctrlClasses.getCourse); 
 
-/* Assignment pages
-router.post('/courses/:courseid/assignments', auth, ctrlAssignments.assignmentCreate);
-router.get('/courses/:courseid/assignments', ctrlAssignments.getAssignments);
-router.get('/courses/:courseid/assignments/:assignmentid', ctrlAssignments.getAssignment);
-router.put('/courses/:courseid/assignments/:assignmentid', auth, ctrlAssignments.updateAssignment);
-router.delete('/courses/:courseid/assignments/:assignmentid', auth, ctrlAssignments.deleteAssignment); */
-
+/* Item pages 
+router.post('items',auth, ctrlItem.itemCreate);
+router.get('items', ctrlItem.getItems);
+router.get('items', ctrlItem.getItems);
+router.delete('items',auth, ctrlItem.deleteAssignment); 
+*/
 /* Authentication pages */
 router.post('/register', ctrlAuth.register);
 router.post('/login', ctrlAuth.login);
