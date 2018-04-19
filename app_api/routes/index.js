@@ -3,7 +3,13 @@ var router = express.Router();
 var jwt = require('express-jwt');
 var auth = jwt({
   secret: process.env.JWT_SECRET,
-  userProperty: 'payload'
+  userProperty: 'payload',
+  getToken: function fromHeader(req) {
+  	if(req.cookies.mineslist_token) {
+  		return req.cookies.mineslist_token;
+  	}
+  	return null;
+  }
 });
 var ctrlClasses = require('../controllers/courses');
 // var ctrlAssignments = require('../controllers/assignments');

@@ -7,24 +7,25 @@ var sendJsonResponse = function(res, status, content) {
 }
 
 var getUser = function(req, res, callback) {
-  if (req.payload && req.payload.email) {
+  if (true) {
     User
-      .findOne({ email : req.payload.email })
+      // .findOne({ email : req.payload.email })
+      .find()
       .exec(function(err, user) {
         if (!user) {
-          sendJSONresponse(res, 404, {
+          sendJsonResponse(res, 404, {
             "message": "User not found"
           });
           return;
         } else if (err) {
           console.log(err);
-          sendJSONresponse(res, 404, err);
+          sendJsonResponse(res, 404, err);
           return;
         }
         callback(req, res, user.name);
       });
   } else {
-    sendJSONresponse(res, 404, {
+    sendJsonResponse(res, 404, {
       "message": "User not found"
     });
     return;
@@ -32,8 +33,8 @@ var getUser = function(req, res, callback) {
 };
 
 module.exports.getProfile = function(req, res) {
-  getAuthor(req, res, function(req, res, userName) {
-    if(req.params.courseid) {
+  getUser(req, res, function(req, res, userName) {
+    //if(req.params.name) {
       User
         .find()
         .select("_id email name")
@@ -47,8 +48,8 @@ module.exports.getProfile = function(req, res) {
           }
           sendJsonResponse(res, 200, user);
         });
-    } else {
+    /*} else {
       sendJsonResponse(res, 404, {"message" : "Not found, log in required"});
-    }
+    }*/
   });
 };
