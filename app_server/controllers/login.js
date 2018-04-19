@@ -124,18 +124,3 @@ module.exports.login = function(req, res) {
     });
   }
 };
-
-var renderSellPage = function(req, res) {
-  res.render('sell', {
-	title: 'MinesList',
-    pageHeader: {
-      title: 'Sell',
-	  strapline: 'By students, for students.'
-    },
-    error: req.query.err
-  });
-}
-
-module.exports.sellPage = function(req, res) {
-  renderSellPage(req, res);
-}

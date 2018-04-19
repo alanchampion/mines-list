@@ -7,10 +7,10 @@ var sendJsonResponse = function(res, status, content) {
 }
 
 var getUser = function(req, res, callback) {
-  if (true) {
+  if (req.payload.email) {
     User
-      // .findOne({ email : req.payload.email })
-      .find()
+      .findOne({ email : req.payload.email })
+      .select("_id email name")
       .exec(function(err, user) {
         if (!user) {
           sendJsonResponse(res, 404, {
@@ -22,7 +22,7 @@ var getUser = function(req, res, callback) {
           sendJsonResponse(res, 404, err);
           return;
         }
-        callback(req, res, user.name);
+        callback(req, res, user);
       });
   } else {
     sendJsonResponse(res, 404, {
@@ -33,23 +33,7 @@ var getUser = function(req, res, callback) {
 };
 
 module.exports.getProfile = function(req, res) {
-  getUser(req, res, function(req, res, userName) {
-    //if(req.params.name) {
-      User
-        .find()
-        .select("_id email name")
-        .exec(function(err, user) {
-          if(!user) {
-            sendJsonResponse(res, 404, {"message" : "No user information found"});
-            return;
-          } else if (err) {
-            sendJsonResponse(res, 404, err);
-            return;
-          }
-          sendJsonResponse(res, 200, user);
-        });
-    /*} else {
-      sendJsonResponse(res, 404, {"message" : "Not found, log in required"});
-    }*/
+  getUser(req, res, function(req, res, user) {
+    sendJsonResponse(res, 200, user);
   });
 };

@@ -62,6 +62,34 @@ var _showError = function(req, res, status) {
    }); 
 };
 
+var renderSellPage = function(req, res) {
+  if(req.cookies.mineslist_token) {
+    res.render('sell', {
+    title: 'MinesList',
+      pageHeader: {
+        title: 'Sell',
+      strapline: 'By students, for students.'
+      },
+      mineslist_token: req.cookies.mineslist_token,
+      loggedIn: 'true',
+      error: req.query.err
+    });
+  } else {
+    res.render('sell', {
+    title: 'MinesList',
+      pageHeader: {
+        title: 'Sell',
+      strapline: 'By students, for students.'
+      },
+      error: req.query.err
+    });
+  }
+}
+
+module.exports.sellPage = function(req, res) {
+  renderSellPage(req, res);
+}
+
 var renderClassList = function(req, res, responseBody) {
   console.log(req.cookies.mineslist_token);
   var message;
