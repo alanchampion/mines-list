@@ -20,5 +20,6 @@ router.post('/register', ctrlLogin.register);
 
 /* Other pages */
 // router.get('/about', ctrlOthers.about);
+router.get('/sell', ctrlLogin.sellPage);
 
 module.exports = router;
