@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var ctrlClasses = require('../controllers/classes');
 var ctrlLogin = require('../controllers/login');
+//var ctrlPurchase = require('../controllers/purchase');
 
 /* Item pages */
 router.get('/', ctrlClasses.classlist);
@@ -19,6 +20,7 @@ router.post('/login', ctrlLogin.login);
 router.post('/register', ctrlLogin.register);
 
 /* Other pages */
+router.get('/purchase')
 // router.get('/about', ctrlOthers.about);
 
 module.exports = router;

@@ -1,0 +1,21 @@
+extends layout
+
+include _includes/sharedHTMLfunctions.pug
+
+block content
+  .row.page-header
+    .col-lg-12
+      h1= pageHeader.title
+  .row
+    .col-xs-12
+      .row
+        .col-xs-12
+          each item in items
+            .panel.panel-primary
+              .panel-heading
+                a(href='/item/'+item._id)
+                  h2.panel-title= item.name
+              .panel-body
+                .row
+                  p Seller: #(item.seller)
+                  p Points: #{item.price}
