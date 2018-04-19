@@ -22,8 +22,7 @@ var getAuthor = function(req, res, callback) {
           console.log(err);
           sendJSONresponse(res, 404, err);
           return;
-        }
-        callback(req, res, user.name);
+        }        callback(req, res, user.name);
       });
   } else {
     sendJSONresponse(res, 404, {

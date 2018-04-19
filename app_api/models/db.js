@@ -54,6 +54,6 @@ process.once('SIGTERM', function() {
   });
 });
 
-require ('./item');
+
 require('./users');
 require('./courses');
