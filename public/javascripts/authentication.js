@@ -39,6 +39,8 @@ var login = function(user) {
 */
 var logout = function() {
   window.localStorage.removeItem('mineslist_token');
+  window.localStorage.removeItem('user_email');
+  document.cookie = 'user_email=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   document.cookie = 'mineslist_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
 };
 

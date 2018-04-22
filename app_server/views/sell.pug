@@ -7,6 +7,27 @@ block content
       .col-lg-12
         h1= pageHeader.title
     .row
+    -if(loggedIn == 'true')
+      .col-xs-12.col-md-6
+        form.form-horizontal(action="", method="post", role="form")
+          -if(error == "val")
+            .alert.alert-danger(role="alert") All fields required, please try again
+          -if(error == "auth")
+            .alert.alert-danger(role="alert") Please log in before trying to sell an item
+          .form-group
+            label.col-xs-10.col-sm-2.control-label(for="item") Item
+            .col-xs-12.col-sm-10
+              input.form-control(name="item" required)
+          .form-group
+            label.col-xs-10.col-sm-2.control-label(for="description") Description
+            .col-xs-12.col-sm-10
+              input.form-control(name="description" type="text" required)
+          .form-group
+            label.col-xs-10.col-sm-2.control-label(for="cost") Cost
+            .col-xs-12.col-sm-10
+              input.form-control(name="cost" type="number" min="0" required)
+          button.btn.btn-default.pull-right Sell Item
+    -if(loggedIn != 'true')
       .col-xs-12
         .row
-          .col-xs-12 When logged in, this page displays a list of the items uploaded and ready to be sold.
+          .col-xs-12 Log in to sell items!

@@ -111,6 +111,7 @@ module.exports.login = function(req, res) {
     request(requestOptions, function(err, response, body) {
       if(response.statusCode === 202) {
         res.cookie("mineslist_token", body.token, {expires: new Date(Date.now() + 3600000)});
+        res.cookie("user_email", req.body.email, {expires: new Date(Date.now() + 3600000)});
         res.redirect('/');
       } else if (response.statusCode === 400 && body.name && body.name === "ValidationError") {
         res.redirect('/login?err=missing');

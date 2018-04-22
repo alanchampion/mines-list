@@ -5,7 +5,9 @@ var auth = jwt({
   secret: process.env.JWT_SECRET,
   userProperty: 'payload',
   getToken: function fromHeader(req) {
+    // console.log(req.cookies);
   	if(req.cookies.mineslist_token) {
+      // console.log("Authenticated!");
   		return req.cookies.mineslist_token;
   	}
   	return null;

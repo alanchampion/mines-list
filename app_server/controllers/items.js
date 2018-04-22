@@ -48,18 +48,26 @@ var formatDate = function(dateString) {
 
 var _showError = function(req, res, status) {
   var title, content;
-   if (status === 404) {
-     title = "404, page not found";
-     content = "Oh dear. Looks like we can't find this page. Sorry.";
-   } else {
-     title = status + ", something's gone wrong";
-     content = "Something, somewhere, has gone just a little bit wrong.";
-   }
-   res.status(status);
-   res.render('generic-text', {
-   title : title,
-   content : content
-   }); 
+  if (status === 404) {
+    title = "404, page not found";
+    content = "Oh dear. Looks like we can't find this page. Sorry.";
+  } else {
+    title = status + ", something's gone wrong";
+    content = "Something, somewhere, has gone just a little bit wrong.";
+  }
+  res.status(status);
+  if(req.cookies.mineslist_token) {
+    res.render('generic-text', {
+     title : title,
+     content : content,
+     mineslist_token: req.cookies.mineslist_token,
+     loggedIn: 'true'
+    });
+  } else {
+    res.render('generic-text', {
+
+    });
+  }
 };
 
 var renderSellPage = function(req, res) {
@@ -67,7 +75,7 @@ var renderSellPage = function(req, res) {
     res.render('sell', {
     title: 'MinesList',
       pageHeader: {
-        title: 'Sell',
+        title: 'Sell Item',
       strapline: 'By students, for students.'
       },
       mineslist_token: req.cookies.mineslist_token,
@@ -78,7 +86,7 @@ var renderSellPage = function(req, res) {
     res.render('sell', {
     title: 'MinesList',
       pageHeader: {
-        title: 'Sell',
+        title: 'Sell Item',
       strapline: 'By students, for students.'
       },
       error: req.query.err
@@ -90,8 +98,8 @@ module.exports.sellPage = function(req, res) {
   renderSellPage(req, res);
 }
 
-var renderClassList = function(req, res, responseBody) {
-  console.log(req.cookies.mineslist_token);
+var renderItemsList = function(req, res, responseBody) {
+  // console.log(req.cookies.mineslist_token);
   var message;
   if(!(responseBody instanceof Array)) {
     message = "API lookup error";
@@ -101,38 +109,45 @@ var renderClassList = function(req, res, responseBody) {
       message = "No items found";
     }
   }
+  var bodyItems = []
+  for(var i = 0; i < responseBody.length; i++) {
+    for(var j = 0; j < responseBody[i].items.length; j++) {
+      console.log(responseBody[i].items[j]);
+      bodyItems.push(responseBody[i].items[j]);
+    }
+  }
+  console.log(bodyItems);
   if(req.cookies.mineslist_token) {
-    res.render('classes-list', {
+    res.render('items-list', {
       title: 'MinesList',
       pageHeader: {
         title: 'MinesList',
         strapline: 'By students, for students.'
       },
       sidebar: "Sell and buy things with the Mines campus! Select an item to get started, or click sell above to get started selling of your old junk.",
-      classes: responseBody,
+      items: bodyItems,
       message: message,
       mineslist_token: req.cookies.mineslist_token,
       loggedIn: 'true'
     });
   } else {
-    res.render('classes-list', {
+    res.render('items-list', {
       title: 'MinesList',
       pageHeader: {
         title: 'MinesList',
         strapline: 'By students, for students.'
       },
       sidebar: "Sell and buy things with the Mines campus! Select an item to get started, or click sell above to get started selling of your old junk.",
-      classes: responseBody,
+      items: bodyItems,
       message: message
     });
   }
 };
 
 /* GET 'home' page */
-module.exports.classlist = function(req, res) {
-  renderClassList(req, res);
-  /*var requestOptions, path;
-  path = '/api/courses';
+module.exports.itemsList = function(req, res) {
+  var requestOptions, path;
+  path = '/api/items';
   requestOptions = {
     url : apiOptions.server + path,
     method : "GET",
@@ -141,11 +156,11 @@ module.exports.classlist = function(req, res) {
   }
   request(requestOptions, function(err, response, body) {
     if(response.statusCode === 200) {
-      renderClassList(req, res, body);
+      renderItemsList(req, res, body);
     } else {
       _showError(req, res, response.statusCode);
     }
-  });*/
+  });
 }
 
 var renderClass = function(req, res, responseBody) {
@@ -224,6 +239,40 @@ module.exports.addAssignment = function(req, res) {
     }
   });
 };
+
+module.exports.doSellItem = function(req, res) {
+  var requestOptions, path, postdata;
+  path = "/api/items/";
+  postdata = {
+    name: req.body.item,
+    description: req.body.description,
+    price: req.body.cost,
+    seller: req.cookies.user_email
+  };
+  requestOptions = {
+    url: apiOptions.server + path,
+    method: "POST", 
+    json: postdata,
+    headers: {
+      'Cookie': "mineslist_token=" + req.cookies.mineslist_token + ";"
+    }
+  };
+  if (!postdata.name || !postdata.description || !postdata.price || !postdata.seller) {
+    res.redirect('/sell?err=val');
+  } else {
+    request(requestOptions, function(err, response, body) {
+      if(response.statusCode === 201) {
+        res.redirect('/');
+      } else if (response.statusCode === 400 && body.name && body.name === "ValidationError") {
+        res.redirect('/sell?err=val');
+      } else if (response.statusCode === 401) {
+        res.redirect('/sell?err=auth');
+      } else {
+        _showError(req, res, response.statusCode);
+      }
+    });
+  }
+}
 
 module.exports.doAddAssignment = function(req, res) {
   var requestOptions, path, classid, postdata;
