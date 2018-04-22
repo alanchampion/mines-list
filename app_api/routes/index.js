@@ -13,8 +13,7 @@ var auth = jwt({
   	return null;
   }
 });
-var ctrlClasses = require('../controllers/courses');
-// var ctrlAssignments = require('../controllers/assignments');
+
 var ctrlUsers = require('../controllers/users');
 var ctrlAuth = require('../controllers/authentication');
 var ctrlItem = require('../controllers/item');

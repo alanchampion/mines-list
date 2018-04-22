@@ -47,32 +47,36 @@ module.exports.deleteItem = function(req, res) {
     return;
   }
   User
-    .findOne({email:req.payload.email})
-    .select('items')
-    .exec(function(err, user) {
-      if(!user) {
-        sendJsonResponse(res, 404, {"message" : "User not found."});
+    .find()
+    .select('items _id')
+    .exec(function(err, users) {
+      if(!users) {
+        sendJsonResponse(res, 404, {"message" : "No items found."});
         return;
       } else if(err) {
         sendJsonResponse(res, 400, err);
         return;
-      } 
-      if(user.items && user.items.length > 0) {
-        if(!user.items.id(req.params.itemid)) {
-          sendJsonResponse(res, 404, {"message" : "item id not found"});
-        } else {
-          user.items.id(req.params.itemid).remove();
-          user.save(function(err) {
-            if(err) {
-              console.log(err);
-              sendJsonResponse(res, 404, err);
-            } else {
-              sendJsonResponse(res, 204, null);
+      } else {
+        for(var i = 0; i < users.length; i++) {
+          for(var j = 0; j < users[i].items.length; j++) {
+            if(users[i].items[j]._id == req.params.itemid) {
+              users[i].items.id(req.params.itemid).remove();
+              users[i].save(function(err) {
+                if(err) {
+                  console.log(err);
+                  sendJsonResponse(res, 404, err);
+                } else {
+                  sendJsonResponse(res, 204, null);
+                }
+              });
+              return;
             }
-          });
+          }
         }
+
+        sendJsonResponse(res, 404, {"message": "No item with the given item id are found"});
       }
- });
+  });
 }
 
 module.exports.getItems = function(req, res) {
@@ -97,33 +101,33 @@ module.exports.getItem = function(req, res) {
     return;
   }
   User
-    .findOne({email:req.payload.email})
+    .find()
     .select('items _id')
-    .exec(function(err, user) {
-      if(!user) {
+    .exec(function(err, users) {
+      if(!users) {
         sendJsonResponse(res, 404, {"message": "Not found, log in and item id are both required"});
       } else if(err) {
         sendJsonResponse(res, 400, err);
         return;
       } else {
-        if(user.items && user.items.length > 0) {
-          thisItem = user.items.id(req.params.itemid);
-          if(!thisItem) {
-            sendJsonResponse(res, 404, {"message" : "item id not found"});
-          } else {
-            var data = {
-              name: thisItem.name,
-              seller: thisItem.seller,
-              email: req.payload.email,
-              price: thisItem.price,
-              _id: thisItem._id,
-              description: thisItem.description
-            };
-            sendJsonResponse(res, 200, data);
+        for(var i = 0; i < users.length; i++) {
+          for(var j = 0; j < users[i].items.length; j++) {
+            if(users[i].items[j]._id == req.params.itemid) {
+              var data = {
+                name: users[i].items[j].name,
+                seller: users[i].items[j].seller,
+                email: req.payload.email,
+                price: users[i].items[j].price,
+                _id: users[i].items[j]._id,
+                description: users[i].items[j].description
+              };
+              sendJsonResponse(res, 200, data);
+              return;
+            }
           }
-        } else {
-          sendJsonResponse(res, 404, {"message" : "No item found"});
         }
+
+        sendJsonResponse(res, 404, {"message": "No item with the given item id are found"});
       }
- });
+  });
 };

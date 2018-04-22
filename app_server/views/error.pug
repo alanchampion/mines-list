@@ -1,6 +1,14 @@
-extends layout
-
-block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+doctype html
+html
+  head
+    meta(names='viewport', content='width=device-width, initial-scale=1.0')
+    title= title
+    -if(mineslist_token)
+      meta(names='authentication', content=mineslist_token)
+    link(rel='stylesheet', href='/bootstrap/css/superhero.bootstrap.css')
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body(style="margin-bottom:3em;")
+    .container
+      h1= message
+      h2= error.status
+      pre #{error.stack}

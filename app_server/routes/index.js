@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 var ctrlItems = require('../controllers/items');
 var ctrlLogin = require('../controllers/login');
+var ctrlUser = require('../controllers/user');
 //var ctrlPurchase = require('../controllers/purchase');
 
 /* Item pages */
@@ -11,13 +12,7 @@ router.get('/items/:itemid', ctrlItems.itemInfo);
 router.get('/sell', ctrlItems.sellPage);
 router.post('/sell', ctrlItems.doSellItem);
 router.get('/items/:itemid/purchase', ctrlItems.purchaseItem);
-
-router.get('/class/:classid', ctrlItems.classInfo);
-router.get('/class/:classid/assignment/new', ctrlItems.addAssignment);
-router.post('/class/:classid/assignment/new', ctrlItems.doAddAssignment);
-router.get('/class/:classid/assignment/:assignmentid/delete', ctrlItems.deleteAssignment);
-router.get('/class/:classid/assignment/:assignmentid', ctrlItems.updateAssignment);
-router.post('/class/:classid/assignment/:assignmentid', ctrlItems.doUpdateAssignment);
+router.get('/items/:itemid/delete', ctrlItems.deleteItem);
 
 /* Login pages */
 router.get('/login', ctrlLogin.loginPage);
@@ -26,5 +21,6 @@ router.post('/login', ctrlLogin.login);
 router.post('/register', ctrlLogin.register);
 
 /* Other pages */
+router.get('/profile', ctrlUser.profile);
 
 module.exports = router;

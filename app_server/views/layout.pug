@@ -22,6 +22,9 @@ html
               a(href='/') Purchase
             li
               a(href='/sell') Sell
+            -if(loggedIn == 'true')
+              li
+                a(href='/profile') Profile
           ul.nav.navbar-nav.navbar-right
             -if(loggedIn == 'true')
               li

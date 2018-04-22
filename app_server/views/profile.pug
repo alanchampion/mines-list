@@ -1,0 +1,41 @@
+extends layout
+
+include _includes/sharedHTMLfunctions.pug
+
+block content
+  .row.page-header
+    .col-lg-12
+      -if(loggedIn == 'true')
+        - var possesive = "'s"
+        h1 #{name}#{possesive} #{title}
+      -if(loggedIn != 'true')
+        h1 Log in to View Your Profile
+  .row
+  -if(loggedIn == 'true')
+    .col-xs-12
+      .row
+        .col-xs-12
+          p Name: #{name}
+          p Email: #{email}
+      .row
+        .col-xs-12
+          -if(remove == "error")
+            .alert.alert-danger(role="alert").alert-dismissable Error trying to delete item!
+              a(href="#" data-dismiss="alert" aria-label="close").close &times;
+          -if(remove == "complete")
+            .alert.alert-success(role="alert").alert-dismissable Successfully removed item!
+              a(href="#" data-dismiss="alert" aria-label="close").close &times;
+          each item in items
+            .panel.panel-primary
+              .panel-heading
+                a(href='/items/'+item._id)
+                  h2.panel-title= item.name
+                  a.btn.btn-default.button-left(href='/items/'+item._id+'/delete') Delete
+              .panel-body
+                .row
+                  p Price: $#{item.price}
+                  p Description: #{item.description}
+  -if(loggedIn != 'true')
+    .col-xs-12
+        .row
+          .col-xs-12 Log in to view your profile!
