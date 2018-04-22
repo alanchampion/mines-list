@@ -7,6 +7,10 @@ var sendJsonResponse = function(res, status, content) {
 }
 
 module.exports.postItem = function(req, res) {
+  if (!req.payload.name) {
+    sendJsonResponse(res, 404, {"message" : "Log in to sell items!"});
+    return;
+  }
   User
     .findOne({email:req.payload.email})
     .select('items')
@@ -17,7 +21,7 @@ module.exports.postItem = function(req, res) {
       } else {
           user.items.push({
           name: req.body.name,
-          seller: req.body.seller,
+          seller: req.payload.name,
           price: req.body.price,
           description: req.body.description
           });
@@ -37,6 +41,7 @@ module.exports.postItem = function(req, res) {
 };
 
 module.exports.deleteItem = function(req, res) {
+  // console.log(req.payload);
   if (!req.payload.email || !req.params.itemid) {
     sendJsonResponse(res, 404, {"message" : "Not found, log in and item id are both required"});
     return;
@@ -82,6 +87,43 @@ module.exports.getItems = function(req, res) {
         return;
       } else {
         sendJsonResponse(res, 200, users);
+      }
+ });
+};
+
+module.exports.getItem = function(req, res) {
+  if (!req.payload.email || !req.params.itemid) {
+    sendJsonResponse(res, 404, {"message" : "Not found, log in and item id are both required"});
+    return;
+  }
+  User
+    .findOne({email:req.payload.email})
+    .select('items _id')
+    .exec(function(err, user) {
+      if(!user) {
+        sendJsonResponse(res, 404, {"message": "Not found, log in and item id are both required"});
+      } else if(err) {
+        sendJsonResponse(res, 400, err);
+        return;
+      } else {
+        if(user.items && user.items.length > 0) {
+          thisItem = user.items.id(req.params.itemid);
+          if(!thisItem) {
+            sendJsonResponse(res, 404, {"message" : "item id not found"});
+          } else {
+            var data = {
+              name: thisItem.name,
+              seller: thisItem.seller,
+              email: req.payload.email,
+              price: thisItem.price,
+              _id: thisItem._id,
+              description: thisItem.description
+            };
+            sendJsonResponse(res, 200, data);
+          }
+        } else {
+          sendJsonResponse(res, 404, {"message" : "No item found"});
+        }
       }
  });
 };

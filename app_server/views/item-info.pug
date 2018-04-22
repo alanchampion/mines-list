@@ -1,0 +1,28 @@
+extends layout
+
+include _includes/sharedHTMLfunctions.pug
+
+block content
+  .row.page-header
+    .col-lg-12
+      -if(loggedIn == 'true')
+        h1 #{title} - #{name}
+      -if(loggedIn != 'true')
+        h1 Log in to View Item
+  .row
+  -if(loggedIn == 'true')
+    .col-xs-12
+      .row
+        .col-xs-6
+          -if(error == "purchase")
+            .alert.alert-danger(role="alert").alert-dismissible Error trying to purchase item
+              a(href="#" data-dismiss="alert" aria-label="close").close &times;
+          p Seller: #{seller}
+          p Seller's Email: #{email}
+          p Price: #{price}
+          p Description: #{description}
+          a.btn.btn-default.button-left(href='/items/'+id+'/purchase') Purchase
+  -if(loggedIn != 'true')
+    .col-xs-12
+        .row
+          .col-xs-12 Log in to view items!

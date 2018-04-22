@@ -7,9 +7,10 @@ var ctrlLogin = require('../controllers/login');
 /* Item pages */
 router.get('/', ctrlItems.itemsList);
 router.get('/purchase')
-// router.get('/about', ctrlOthers.about);
+router.get('/items/:itemid', ctrlItems.itemInfo);
 router.get('/sell', ctrlItems.sellPage);
 router.post('/sell', ctrlItems.doSellItem);
+router.get('/items/:itemid/purchase', ctrlItems.purchaseItem);
 
 router.get('/class/:classid', ctrlItems.classInfo);
 router.get('/class/:classid/assignment/new', ctrlItems.addAssignment);

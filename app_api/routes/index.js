@@ -22,7 +22,7 @@ var ctrlItem = require('../controllers/item');
 /* Item pages */
 router.post('/items', auth, ctrlItem.postItem);
 router.get('/items', ctrlItem.getItems);
-// router.get('/items', ctrlItem.getItems);
+router.get('/items/:itemid', auth, ctrlItem.getItem);
 router.delete('/items/:itemid', auth, ctrlItem.deleteItem); 
 
 /* Authentication pages */

@@ -112,11 +112,25 @@ var renderItemsList = function(req, res, responseBody) {
   var bodyItems = []
   for(var i = 0; i < responseBody.length; i++) {
     for(var j = 0; j < responseBody[i].items.length; j++) {
-      console.log(responseBody[i].items[j]);
+      // console.log(responseBody[i].items[j]);
       bodyItems.push(responseBody[i].items[j]);
     }
   }
-  console.log(bodyItems);
+
+  function shuffle(a) {
+    var j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+  }
+
+  bodyItems = shuffle(bodyItems);
+
+  // console.log(bodyItems);
   if(req.cookies.mineslist_token) {
     res.render('items-list', {
       title: 'MinesList',
@@ -127,6 +141,7 @@ var renderItemsList = function(req, res, responseBody) {
       sidebar: "Sell and buy things with the Mines campus! Select an item to get started, or click sell above to get started selling of your old junk.",
       items: bodyItems,
       message: message,
+      purchase: req.query.purchase,
       mineslist_token: req.cookies.mineslist_token,
       loggedIn: 'true'
     });
@@ -139,7 +154,8 @@ var renderItemsList = function(req, res, responseBody) {
       },
       sidebar: "Sell and buy things with the Mines campus! Select an item to get started, or click sell above to get started selling of your old junk.",
       items: bodyItems,
-      message: message
+      message: message,
+      purchase: req.query.purchase
     });
   }
 };
@@ -162,6 +178,65 @@ module.exports.itemsList = function(req, res) {
     }
   });
 }
+
+var renderItem = function(req, res, responseBody) {
+  // console.log(responseBody);
+  if(req.cookies.mineslist_token) {
+    res.render('item-info', {
+      title: 'Item Info',
+      name: responseBody.name,
+      price: responseBody.price,
+      seller: responseBody.seller,
+      email: responseBody.email,
+      description: responseBody.description,
+      id: responseBody._id,
+      error: req.query.err,
+      mineslist_token: req.cookies.mineslist_token,
+      loggedIn: 'true'
+    });
+  } else {
+    res.render('item-info', {
+      /*title: 'Item Info',
+      name: responseBody.name,
+      price: responseBody.price,
+      seller: responseBody.seller,
+      description: responseBody.description,
+      id: responseBody._id,*/
+      error: req.query.err
+    });
+  }
+}
+
+/* GET 'Location info' page */
+module.exports.itemInfo = function(req, res) {
+  var requestOptions, path, postdata;
+  path = "/api/items/" + req.params.itemid;
+  postdata = {
+    payload: req.cookies.user_email
+  };
+  requestOptions = {
+    url : apiOptions.server + path,
+    method : "GET", 
+    json: {},
+    qs : {},
+    headers: {
+      'Cookie': "mineslist_token=" + req.cookies.mineslist_token + ";"
+    }
+  };
+  request(requestOptions, function(err, response, body) {
+    if(response.statusCode === 200) {
+      var data;
+      data = body;
+      renderItem(req, res, data);
+    } else {
+      if(response.statusCode == 401) {
+        renderItem(req, res, data);
+      } else {
+        _showError(req, res, response.statusCode);
+      }
+    }
+  });
+};
 
 var renderClass = function(req, res, responseBody) {
   res.render('class-info', {
@@ -246,8 +321,7 @@ module.exports.doSellItem = function(req, res) {
   postdata = {
     name: req.body.item,
     description: req.body.description,
-    price: req.body.cost,
-    seller: req.cookies.user_email
+    price: req.body.cost
   };
   requestOptions = {
     url: apiOptions.server + path,
@@ -257,7 +331,7 @@ module.exports.doSellItem = function(req, res) {
       'Cookie': "mineslist_token=" + req.cookies.mineslist_token + ";"
     }
   };
-  if (!postdata.name || !postdata.description || !postdata.price || !postdata.seller) {
+  if (!postdata.name || !postdata.description || !postdata.price) {
     res.redirect('/sell?err=val');
   } else {
     request(requestOptions, function(err, response, body) {
@@ -267,6 +341,36 @@ module.exports.doSellItem = function(req, res) {
         res.redirect('/sell?err=val');
       } else if (response.statusCode === 401) {
         res.redirect('/sell?err=auth');
+      } else {
+        _showError(req, res, response.statusCode);
+      }
+    });
+  }
+}
+
+module.exports.purchaseItem = function(req, res) {
+  var requestOptions, path, classid, itemid, postdata;
+  itemid = req.params.itemid;
+  path = "/api/items/" + itemid;
+  postdata = {
+    itemid: itemid
+  };
+  requestOptions = {
+    url: apiOptions.server + path,
+    method: "DELETE", 
+    json: postdata,
+    headers: {
+      'Cookie': "mineslist_token=" + req.cookies.mineslist_token + ";"
+    }
+  };
+  if (!postdata.itemid) {
+    res.redirect('/items/' + itemid + '?err=purchase');
+  } else {
+    request(requestOptions, function(err, response, body) {
+      if(response.statusCode === 204) {
+        res.redirect('/?purchase=complete');
+      } else if (response.statusCode === 400 && body.name && body.name === "ValidationError") {
+        res.redirect('/items/' + itemid + '?err=purchase');
       } else {
         _showError(req, res, response.statusCode);
       }

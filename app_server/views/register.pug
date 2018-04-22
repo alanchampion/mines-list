@@ -9,9 +9,11 @@ block content
   #banner.page-header
     .row
       -if(error == 'missing')
-        .alert.alert-danger(role="alert") Make sure fill in everything!
+        .alert.alert-danger(role="alert").alert-dismissible Make sure fill in everything!
+          a(href="#" data-dismiss="alert" aria-label="close").close &times;
       -if(error == 'failed')
-        .alert.alert-danger(role="alert") That email is already taken!
+        .alert.alert-danger(role="alert").alert-dismissible That email is already taken!
+          a(href="#" data-dismiss="alert" aria-label="close").close &times;
       .col-md-6.col-sm-12
         form.form-horizontal(action="", method="post", role="form")
           .form-group
