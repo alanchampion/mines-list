@@ -102,7 +102,7 @@ module.exports.getItem = function(req, res) {
   }
   User
     .find()
-    .select('items _id')
+    .select('items email _id')
     .exec(function(err, users) {
       if(!users) {
         sendJsonResponse(res, 404, {"message": "Not found, log in and item id are both required"});
@@ -113,10 +113,11 @@ module.exports.getItem = function(req, res) {
         for(var i = 0; i < users.length; i++) {
           for(var j = 0; j < users[i].items.length; j++) {
             if(users[i].items[j]._id == req.params.itemid) {
+              console.log(users[i]);
               var data = {
                 name: users[i].items[j].name,
                 seller: users[i].items[j].seller,
-                email: req.payload.email,
+                email: users[i].email,
                 price: users[i].items[j].price,
                 _id: users[i].items[j]._id,
                 description: users[i].items[j].description
