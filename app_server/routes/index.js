@@ -22,5 +22,6 @@ router.post('/register', ctrlLogin.register);
 
 /* Other pages */
 router.get('/profile', ctrlUser.profile);
+router.get('/about', ctrlUser.about);
 
 module.exports = router;

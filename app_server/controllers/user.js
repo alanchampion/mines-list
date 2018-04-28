@@ -76,4 +76,15 @@ module.exports.profile = function(req, res) {
       _showError(req, res, response.statusCode);
     }
   });
+};
+
+module.exports.about = function(req, res) {
+  if(req.cookies.mineslist_token) {
+    res.render('about', {
+      mineslist_token: req.cookies.mineslist_token,
+      loggedIn: 'true'
+    });
+  } else {
+    res.render('about', {});
+  }
 }
