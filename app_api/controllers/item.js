@@ -113,7 +113,7 @@ module.exports.getItem = function(req, res) {
         for(var i = 0; i < users.length; i++) {
           for(var j = 0; j < users[i].items.length; j++) {
             if(users[i].items[j]._id == req.params.itemid) {
-              console.log(users[i]);
+              // console.log(users[i]);
               var data = {
                 name: users[i].items[j].name,
                 seller: users[i].items[j].seller,

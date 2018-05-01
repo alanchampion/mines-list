@@ -28,7 +28,7 @@ html
           ul.nav.navbar-nav.navbar-right
             -if(loggedIn == 'true')
               li
-                a(href='/' onclick='logout();') Log Out
+                a(href='#' onclick='logout();') Log Out
             -if(loggedIn != 'true')
               li
                 a(href='/register') Sign Up

@@ -19,6 +19,8 @@ block content
           .col-xs-12.list-group-item
             h4
               a(href="/items/" + item._id)= item.name
-            p $#{item.price}&nbsp;-&nbsp;#{item.seller}
+            p
+              +formatCost(item.price)
+              span :&nbsp;#{item.seller}
     .col-xs-12.col-sm-4
       p.lead= sidebar

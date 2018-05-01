@@ -7,7 +7,7 @@ var auth = jwt({
   getToken: function fromHeader(req) {
     // console.log(req.cookies);
   	if(req.cookies.mineslist_token) {
-      // console.log("Authenticated!");
+      console.log("Authenticated!");
   		return req.cookies.mineslist_token;
   	}
   	return null;

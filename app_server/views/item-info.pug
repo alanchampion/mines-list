@@ -19,7 +19,8 @@ block content
               a(href="#" data-dismiss="alert" aria-label="close").close &times;
           p Seller: #{seller}
           p Seller's Email: #{email}
-          p Price: #{price}
+          p Price: 
+            +formatCost(price)
           p Description: #{description}
           a.btn.btn-default.button-left(href='/items/'+id+'/purchase') Purchase
   -if(loggedIn != 'true')

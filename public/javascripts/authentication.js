@@ -37,11 +37,16 @@ var login = function(user) {
   });
 };
 */
-var logout = function() {
+function removeTokens() {
   window.localStorage.removeItem('mineslist_token');
   window.localStorage.removeItem('user_email');
   document.cookie = 'user_email=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
   document.cookie = 'mineslist_token=; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+}
+
+function logout() {
+  removeTokens();
+  window.location = '/';
 };
 
 var getToken = function () {

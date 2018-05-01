@@ -131,7 +131,7 @@ var renderItemsList = function(req, res, responseBody) {
 
   bodyItems = shuffle(bodyItems);
 
-  // console.log(bodyItems);
+  // console.log(res);
   if(req.cookies.mineslist_token) {
     res.render('items-list', {
       title: 'MinesList',

@@ -12,3 +12,11 @@ mixin formatDate(dateString)
   -var y = date.getFullYear();
   -var output = m + ' ' + d + ', ' + y;
   =output
+
+mixin formatCost(value)
+  -var output = ""
+  -if(value < 0)
+    -output = output + "- $" + Math.abs(value)
+  -else
+    -output = output + "$" + value
+  =output
