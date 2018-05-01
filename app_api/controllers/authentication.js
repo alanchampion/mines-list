@@ -7,10 +7,22 @@ var sendJSONresponse = function(res, status, content) {
   res.json(content);
 };
 
+function validateEmail(email) {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+}
+
 module.exports.register = function(req, res) {
   if(!req.body.name || !req.body.email || !req.body.password) {
     sendJSONresponse(res, 400, {
       "message": "All fields required"
+    });
+    return;
+  }
+
+  if(!validateEmail(req.body.email)) {
+    sendJSONresponse(res, 400, {
+      "message": "Invalid email"
     });
     return;
   }
